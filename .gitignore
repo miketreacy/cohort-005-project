@@ -41,3 +41,4 @@ stryker.log
 
 # Emails written locally instead of sent
 .outbox/
+.oxlintrc.exemption-check.json
