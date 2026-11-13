@@ -17,7 +17,7 @@ import { LandingStats } from "~/components/landing/landing-stats";
 import { LandingFooter } from "~/components/landing/landing-footer";
 import { getCurrentUserId, getDevCountry } from "~/lib/session";
 import { getCountryTierInfo, COUNTRIES } from "~/lib/ppp";
-import { eq, like, and, or, sql } from "drizzle-orm";
+import { eq, like, and, or, sql, count, inArray } from "drizzle-orm";
 import { db } from "~/db";
 import { courses, categories, users, modules, lessons } from "~/db/schema";
 
@@ -94,22 +94,18 @@ function buildCourseQuery(
   return sorted.limit(limit).offset(offset).all();
 }
 
-function getLessonCountForCourse(courseId: number) {
-  const courseModules = db
-    .select({ id: modules.id })
+function getLessonCountsByCourse(courseIds: number[]) {
+  if (courseIds.length === 0) return new Map<number, number>();
+
+  const rows = db
+    .select({ courseId: modules.courseId, count: count(lessons.id) })
     .from(modules)
-    .where(eq(modules.courseId, courseId))
+    .innerJoin(lessons, eq(lessons.moduleId, modules.id))
+    .where(inArray(modules.courseId, courseIds))
+    .groupBy(modules.courseId)
     .all();
 
-  if (courseModules.length === 0) return 0;
-
-  const count = db
-    .select({ count: sql<number>`count(*)` })
-    .from(lessons)
-    .where(or(...courseModules.map((m) => eq(lessons.moduleId, m.id))))
-    .get();
-
-  return count?.count ?? 0;
+  return new Map(rows.map((row) => [row.courseId, row.count]));
 }
 
 export function meta() {
@@ -132,9 +128,11 @@ export async function loader({ request }: Route.LoaderArgs) {
     50,
     0
   );
-  const featured = courses.slice(0, 4).map((course) => ({
+  const newest = courses.slice(0, 4);
+  const lessonCounts = getLessonCountsByCourse(newest.map((c) => c.id));
+  const featured = newest.map((course) => ({
     ...course,
-    lessonCount: getLessonCountForCourse(course.id),
+    lessonCount: lessonCounts.get(course.id) ?? 0,
   }));
   const categories = getAllCategories();
   const users = getAllUsers();
