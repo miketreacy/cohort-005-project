@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { CourseImage } from "~/components/course-image";
 import { CourseMeta } from "~/components/course-meta";
+import { cn } from "~/lib/utils";
 
 export type SpotlightCourse = {
   slug: string;
@@ -21,7 +22,12 @@ export function LandingHero({
   signedIn: boolean;
 }) {
   return (
-    <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-[3fr_2fr]">
+    <section
+      className={cn(
+        "mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 sm:py-24",
+        spotlight && "lg:grid-cols-[3fr_2fr]"
+      )}
+    >
       <div>
         <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">
           Courses for developers
