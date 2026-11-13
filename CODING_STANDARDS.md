@@ -44,7 +44,18 @@ change to how the module stores its data leaves its tests alone.
 
 ## Keep files under 5000 tokens
 
-Keep every file under 5000 tokens.
+A new file stays under 5000 tokens. A file already over the limit may be
+edited but may not grow; the pre-commit hook enforces both. Put what you add
+in a new file. A split of an oversized file is a change of its own, in its
+own pull request: inside a fix, it buries the fix.
+
+## A module owns everything in it
+
+Code moved into a module meets the module's standards in the same change:
+tests through its entry points, transactions, no query in a loop, an injected
+clock. "Moved unchanged" does not excuse it, because the module's interface
+now promises it. If the code cannot be brought up to standard in this change,
+leave it where it was.
 
 ## Wrap related writes in a transaction
 
@@ -91,6 +102,13 @@ Anything the browser can read is public. A secret is read only in a
 
 Rendering is for working out what the output is, not for doing something.
 Anything that touches the outside world belongs in an effect or an action.
+
+## A disabled control says why
+
+When a button or input turns disabled, the screen says what would enable it.
+A greyed-out Save with no message reads as broken. Replacing a server error
+with client-side disabling keeps the message: clearing a saved note once left
+Save disabled with nothing on screen to say a note cannot be empty.
 
 ## Derive, do not store
 

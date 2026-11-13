@@ -71,7 +71,12 @@ module.exports = {
         "No dependency cycles. Scope to `^${R}/` if you want to allow cycles outside packages.",
       severity: "error",
       from: {},
-      to: { circular: true },
+      // Type-only imports are erased at build time, so a cycle through one
+      // never runs. tsPreCompilationDeps (below) makes them visible.
+      to: {
+        circular: true,
+        viaOnly: { dependencyTypesNot: ["type-only"] },
+      },
     },
 
     // --- Layering (optional, off by default) ----------------------------------
@@ -104,8 +109,27 @@ module.exports = {
         path: ["^app/db/index\\.ts$", "^node_modules/better-sqlite3/"],
       },
     },
+    {
+      name: "modules-no-components",
+      comment:
+        "Dependencies point from the UI to the modules, never back. A module that needs a type the UI also uses defines it, and the component imports it from the module.",
+      severity: "error",
+      from: { path: `^${R}/` },
+      to: { path: "^app/components/" },
+    },
+    {
+      name: "components-no-route-types",
+      comment:
+        "A shared component may not import a route's generated +types: that ties it to the one route. Type its props from the data it takes, or from the module that produces it.",
+      severity: "error",
+      from: { path: "^app/components/" },
+      to: { path: "(^|/)\\+types/" },
+    },
   ],
   options: {
+    // Type-only imports count: a module that imports a component's type
+    // depends on the UI as much as one that imports its code.
+    tsPreCompilationDeps: true,
     doNotFollow: { path: "node_modules" },
     tsConfig: { fileName: "tsconfig.json" },
     enhancedResolveOptions: {

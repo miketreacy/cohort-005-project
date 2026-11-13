@@ -235,6 +235,38 @@ if (targets.length === 0) {
   process.exit(0);
 }
 
+/**
+ * The modules among the targets that have no test file in their `tests/`
+ * folder. Every mutant in one of them survives or times out, and with
+ * `coverageAnalysis: "off"` each costs a full run of the suite: one untested
+ * file once took ten minutes to say what `ls` says at once.
+ */
+function untestedModules(files: string[]): string[] {
+  const names = files.flatMap((file) => {
+    const match = /^app\/modules\/([^/]+)\//.exec(file);
+    return match ? [match[1]] : [];
+  });
+  return [...new Set(names)].filter((name) => {
+    const tests = resolve(repoRoot, "app/modules", name, "tests");
+    if (!existsSync(tests)) return true;
+    return !readdirSync(tests, { recursive: true, encoding: "utf8" }).some(
+      (file) => /\.test\.tsx?$/.test(file)
+    );
+  });
+}
+
+const untested = untestedModules(targets.map(({ file }) => file));
+if (untested.length > 0) {
+  console.error(
+    "No tests reach these modules, so mutation testing would only prove that:\n\n" +
+      untested
+        .map((name) => `  - app/modules/${name}/tests/ is empty\n`)
+        .join("") +
+      "\nWrite tests through the module's entry points, then run this again.\n"
+  );
+  process.exit(1);
+}
+
 console.log(`Mutation testing against ${targets.length} file(s):`);
 for (const { file, lines } of targets) {
   console.log(`  - ${file}${lines ? ` (lines ${lines.join(", ")})` : ""}`);
