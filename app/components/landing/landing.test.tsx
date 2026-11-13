@@ -31,12 +31,12 @@ describe("LandingHero", () => {
     expect(root.html).not.toContain("justify-center gap-4");
   });
 
-  it("offers sign-up to a visitor and the dashboard to a signed-in user", () => {
-    const visitor = render(<LandingHero spotlight={null} signedIn={false} />);
-    expect(hrefs(visitor)).toEqual(["/courses", "/signup"]);
+  it("offers sign-up to someone signed out and the dashboard to a Person", () => {
+    const signedOut = render(<LandingHero spotlight={null} signedIn={false} />);
+    expect(hrefs(signedOut)).toEqual(["/courses", "/signup"]);
 
-    const member = render(<LandingHero spotlight={null} signedIn={true} />);
-    expect(hrefs(member)).toEqual(["/courses", "/dashboard"]);
+    const signedIn = render(<LandingHero spotlight={null} signedIn={true} />);
+    expect(hrefs(signedIn)).toEqual(["/courses", "/dashboard"]);
   });
 
   it("links the spotlight card to its course", () => {
@@ -81,12 +81,12 @@ describe("LandingStats", () => {
 });
 
 describe("LandingFooter", () => {
-  it("links a visitor to log in and sign up", () => {
+  it("links someone signed out to log in and sign up", () => {
     const root = render(<LandingFooter signedIn={false} />);
     expect(hrefs(root)).toEqual(["/", "/courses", "/login", "/signup"]);
   });
 
-  it("links a signed-in user to the dashboard", () => {
+  it("links a Person to the dashboard", () => {
     const root = render(<LandingFooter signedIn={true} />);
     expect(hrefs(root)).toEqual(["/", "/courses", "/dashboard"]);
   });
