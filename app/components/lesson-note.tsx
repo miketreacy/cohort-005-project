@@ -82,6 +82,13 @@ function NoteStatusLine({
       <span className="text-xs text-muted-foreground">Unsaved changes</span>
     );
   }
+  if (state === "empty" && updatedAt) {
+    return (
+      <span className="text-xs text-muted-foreground">
+        A note can't be empty
+      </span>
+    );
+  }
   if (state === "saved" && updatedAt) {
     return (
       <span suppressHydrationWarning className="text-xs text-muted-foreground">
