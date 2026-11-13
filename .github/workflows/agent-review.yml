@@ -163,6 +163,14 @@ jobs:
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code
 
+      - name: Install agent-browser
+        # Before the agent starts, so it drives the app at once instead of
+        # spending turns installing and waiting on a browser download. See
+        # docs/agents/agent-browser.md.
+        run: |
+          npm install -g agent-browser@0.43.0
+          agent-browser install --with-deps
+
       - name: Migrate and seed the database
         # The pre-commit hook runs on every commit the agent makes, and the
         # repo's checks need a database.
@@ -271,11 +279,14 @@ jobs:
             echo "Reviewed by the review workflow — [logs](${RUN_URL}). This run"
             echo "saw the diff, the standards and the ticket, and nothing else."
           } >> /tmp/review-verdict.md
-          # Uploads the agent's screenshots and swaps each /tmp/evidence path
-          # in the body for its URL. nullglob: none means no --attach.
+          # Uploads the screenshots the verdict references and swaps each
+          # /tmp/evidence path in the body for its URL. One it does not
+          # reference stays behind, or it would land unlabelled at the bottom.
           shopt -s nullglob
           attach=()
-          for png in /tmp/evidence/*.png; do attach+=(--attach "$png"); done
+          for png in /tmp/evidence/*.png; do
+            grep -qF "$png" /tmp/review-verdict.md && attach+=(--attach "$png")
+          done
           gh pr comment "$PR_NUMBER" --body-file /tmp/review-verdict.md "${attach[@]}"
 
       - name: Post the inline comments

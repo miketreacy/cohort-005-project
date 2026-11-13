@@ -12,6 +12,9 @@ npm install -g agent-browser
 agent-browser install
 ```
 
+The factory workflows install it before the agent starts. Check with
+`agent-browser --version` before you install it again.
+
 ## Asking your own question
 
 Start the app with `npm run dev` first. The examples below use
