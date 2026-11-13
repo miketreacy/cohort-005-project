@@ -12,6 +12,16 @@ export function getQuizByLessonId(lessonId: number) {
   return db.select().from(quizzes).where(eq(quizzes.lessonId, lessonId)).get();
 }
 
+// Scoped to the Lesson so a Quiz elsewhere can't be reached by posting its id
+// to this Lesson's page.
+export function getLessonQuiz(quizId: number, lessonId: number) {
+  return db
+    .select()
+    .from(quizzes)
+    .where(and(eq(quizzes.id, quizId), eq(quizzes.lessonId, lessonId)))
+    .get();
+}
+
 export function getQuizWithQuestions(quizId: number) {
   const quiz = db.select().from(quizzes).where(eq(quizzes.id, quizId)).get();
   if (!quiz) return null;
