@@ -148,6 +148,13 @@
     {
       "files": [
         "app/components/comment-thread.tsx",
+        "app/components/lesson-full.tsx",
+        "app/components/lesson-locked.tsx",
+        "app/components/lesson-navigation.tsx",
+        "app/components/lesson-quiz.tsx",
+        "app/modules/lesson-viewer/lib/course.ts",
+        "app/modules/lesson-viewer/lib/quiz.ts",
+        "app/modules/lesson-viewer/lib/thread.ts",
         "app/components/dev-ui.tsx",
         "app/components/monaco-markdown-editor.tsx",
         "app/components/notification-feed.tsx",
@@ -233,6 +240,10 @@
     },
     {
       "files": [
+        "app/components/lesson-full.tsx",
+        "app/components/lesson-navigation.tsx",
+        "app/components/lesson-quiz.tsx",
+        "app/modules/lesson-viewer/lib/quiz.ts",
         "app/routes/courses.$slug.lessons.$lessonId.tsx",
         "request-logger/render.ts"
       ],
