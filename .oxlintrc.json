@@ -148,8 +148,8 @@
     {
       "files": [
         "app/components/comment-thread.tsx",
-        "app/components/lesson-full.tsx",
-        "app/components/lesson-locked.tsx",
+        "app/routes/lesson-page/full-lesson.tsx",
+        "app/routes/lesson-page/locked-lesson.tsx",
         "app/components/lesson-navigation.tsx",
         "app/components/lesson-quiz.tsx",
         "app/modules/lesson-viewer/lib/course.ts",

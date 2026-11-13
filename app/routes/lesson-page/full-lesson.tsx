@@ -21,7 +21,7 @@ import {
   CurriculumSidebar,
 } from "~/components/lesson-navigation";
 import { QuizSection } from "~/components/lesson-quiz";
-import type { Route } from "../routes/+types/courses.$slug.lessons.$lessonId";
+import type { Route } from "../+types/courses.$slug.lessons.$lessonId";
 type LessonLoaderData = Route.ComponentProps["loaderData"];
 
 const AUTOPLAY_KEY = "cadence-autoplay";

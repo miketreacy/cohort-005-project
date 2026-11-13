@@ -48,8 +48,8 @@ import {
   getQuizByLessonId,
   getQuizWithQuestions,
 } from "~/modules/lesson-viewer/quiz.server";
-import { LockedLesson } from "~/components/lesson-locked";
-import { FullLesson } from "~/components/lesson-full";
+import { LockedLesson } from "./lesson-page/locked-lesson";
+import { FullLesson } from "./lesson-page/full-lesson";
 import { parseFormData } from "~/lib/validation";
 
 const createCommentSchema = z.object({
